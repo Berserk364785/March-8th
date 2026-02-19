@@ -180,7 +180,8 @@ function setupPhotoQuiz() {
 // Запуск при загрузке страницы
 document.addEventListener('DOMContentLoaded', function() {
   createFloatingHearts();
-
+  setupRunawayButton();
+});
   // Запускаем функции в зависимости от наличия элементов
   if (document.getElementById('runawayBtn')) {
     setupRunawayButton();
