@@ -229,6 +229,24 @@ h2 {
   z-index: 0;
   overflow: hidden;
 }
+/* Дополнительные стили для убегающей кнопки */
+#runawayBtn {
+  transition: left 0.2s ease, top 0.2s ease;
+  cursor: pointer;
+  touch-action: manipulation;
+  position: absolute;  /* важно для перемещения */
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Исправляем контейнер, чтобы не мешал */
+.button-container {
+  position: relative;
+  height: 120px;
+  width: 100%;
+  margin: 2rem 0;
+}
 
 /* Анимация для сердечек (прописана в JS, но для надёжности продублируем) */
 @keyframes floatHeart {
