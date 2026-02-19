@@ -46,31 +46,32 @@ function setupRunawayButton() {
   const btn = document.getElementById('runawayBtn');
   if (!btn) return;
 
-  const container = btn.closest('.button-container');
-  if (!container) return;
-
-  // Устанавливаем позиционирование для кнопки
-  btn.style.position = 'absolute';
+  // Начальное положение (центр экрана)
   btn.style.left = '50%';
   btn.style.top = '50%';
   btn.style.transform = 'translate(-50%, -50%)';
-  btn.style.transition = 'left 0.2s ease, top 0.2s ease';
 
-  // Функция для случайного перемещения кнопки внутри контейнера
-  function moveButtonRandomly() {
-    const containerRect = container.getBoundingClientRect();
-    const btnRect = btn.getBoundingClientRect();
+  // Функция для получения безопасных координат
+  function getRandomPosition() {
+    const btnWidth = btn.offsetWidth;
+    const btnHeight = btn.offsetHeight;
 
-    const maxLeft = containerRect.width - btnRect.width;
-    const maxTop = containerRect.height - btnRect.height;
+    const maxLeft = window.innerWidth - btnWidth;
+    const maxTop = window.innerHeight - btnHeight;
 
-    // Генерируем случайные координаты, чтобы кнопка не выходила за границы
-    const newLeft = Math.max(0, Math.min(maxLeft, Math.random() * maxLeft));
-    const newTop = Math.max(0, Math.min(maxTop, Math.random() * maxTop));
+    // Генерируем случайные координаты в пределах видимой области
+    const left = Math.max(0, Math.min(maxLeft, Math.random() * maxLeft));
+    const top = Math.max(0, Math.min(maxTop, Math.random() * maxTop));
 
-    btn.style.left = newLeft + 'px';
-    btn.style.top = newTop + 'px';
-    btn.style.transform = 'none';
+    return { left, top };
+  }
+
+  // Перемещение кнопки
+  function moveButton() {
+    const { left, top } = getRandomPosition();
+    btn.style.left = left + 'px';
+    btn.style.top = top + 'px';
+    btn.style.transform = 'none'; // убираем центрирование
   }
 
   // Счётчик кликов
@@ -78,29 +79,23 @@ function setupRunawayButton() {
 
   // Обработчик клика
   btn.addEventListener('click', function(e) {
-    e.preventDefault(); // не переходим сразу по ссылке
+    e.preventDefault(); // не переходим сразу
 
-    if (clickCount < 2) {
-      // Первые два клика — убегаем и показываем сообщение
+    if (clickCount < 2) { // первые два клика – убегает
       clickCount++;
-      moveButtonRandomly();
+      moveButton();
       alert('Не поймала! Лови ещё!');
-    } else {
-      // На третий клик — переходим на страницу с фото
+    } else { // третий клик – переход
       window.location.href = 'photos.html';
     }
   });
 
-  // Для мобильных устройств убираем поведение при наведении, 
-  // оставляем только логику кликов
-  // Если хочешь оставить прыжки при наведении на ПК — раскомментируй строки ниже
-  /*
-  btn.addEventListener('mouseenter', function() {
-    if (clickCount < 2) {
-      moveButtonRandomly();
-    }
-  });
-  */
+  // Для мобильных – чтобы при касании тоже считалось и убегало
+  btn.addEventListener('touchstart', function(e) {
+    e.preventDefault(); // предотвращаем всплытие
+    // Можно вызывать ту же логику, но осторожно: touchstart может сработать раньше click
+    // Поэтому оставим только click, а touchstart просто блокируем стандартное поведение
+  }, { passive: false });
 }
 
 // 3. Загадка на странице фото
