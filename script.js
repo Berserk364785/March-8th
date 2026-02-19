@@ -54,65 +54,6 @@ function createFloatingHearts() {
   }
 }
 
-// 2. Убегающая кнопка - ПРОСТАЯ И РАБОЧАЯ
-// 2. Убегающая кнопка - ИСПРАВЛЕННАЯ (не уходит вниз)
-function setupRunawayButton() {
-  const btn = document.getElementById('runawayBtn');
-  if (!btn) return;
-
-  // Делаем кнопку фиксированной (привязанной к окну, а не к странице)
-  btn.style.position = 'fixed';
-  btn.style.zIndex = '9999';
-  
-  let clickCount = 0;
-  
-  // Функция для случайного перемещения по видимой области экрана
-  function moveButtonRandomly() {
-    const btnWidth = btn.offsetWidth;
-    const btnHeight = btn.offsetHeight;
-    
-    // Границы внутри видимого окна (с учётом размеров кнопки)
-    const maxLeft = window.innerWidth - btnWidth;
-    const maxTop = window.innerHeight - btnHeight;
-    
-    // Генерируем случайные координаты, но не ниже нижней границы
-    const newLeft = Math.max(0, Math.min(maxLeft, Math.random() * maxLeft));
-    const newTop = Math.max(0, Math.min(maxTop, Math.random() * maxTop));
-    
-    // Применяем новые координаты
-    btn.style.left = newLeft + 'px';
-    btn.style.top = newTop + 'px';
-    
-    console.log('Кнопка перемещена на:', newLeft, newTop); // для отладки
-  }
-
-  // Сохраняем начальное положение кнопки (центр экрана)
-  btn.style.left = '50%';
-  btn.style.top = '50%';
-  btn.style.transform = 'translate(-50%, -50%)';
-
-  // Обработчик клика
-  btn.addEventListener('click', function(e) {
-    e.preventDefault(); // не переходим сразу
-    
-    if (clickCount < 2) {
-      clickCount++;
-      moveButtonRandomly();
-      alert('Не поймала! Лови ещё! (осталось ' + (2 - clickCount) + ' попытки)');
-    } else {
-      // на третий раз переходим
-      window.location.href = 'photos.html';
-    }
-  });
-
-  // Для мобильных - обрабатываем касание
-  btn.addEventListener('touchstart', function(e) {
-    e.preventDefault();
-    btn.click();
-  }, { passive: false });
-  
-  console.log('Убегающая кнопка настроена');
-}
 // 3. Загадка для фото
 function setupPhotoQuiz() {
   const overlay = document.getElementById('quizOverlay');
@@ -140,6 +81,8 @@ function setupPhotoQuiz() {
 // Запуск при загрузке
 document.addEventListener('DOMContentLoaded', function() {
   createFloatingHearts();
-  setupRunawayButton();
+  // setupRunawayButton();  // ← закомментировали или удалили
   setupPhotoQuiz();
+  typeWriterEffect();   // если есть
+  setupAudio();         // если есть
 });
