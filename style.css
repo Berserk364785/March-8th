@@ -207,13 +207,17 @@ h2 {
 
 /* Сама кнопка – фиксированное позиционирование */
 #runawayBtn {
-  transition: left 0.1s ease, top 0.1s ease;
+  transition: left 0.2s ease, top 0.2s ease;
   will-change: left, top;
-  z-index: 9999;  /* будет поверх всего, когда получит position */
   touch-action: manipulation;
-  user-select: none;
+  cursor: pointer;
+  position: static; /* изначально в потоке */
 }
 
+#runawayBtn.flying {
+  position: fixed;
+  z-index: 9999;
+}
 /* Летающие сердечки (анимация задаётся в JS, но можно прописать базовые стили) */
 .hearts-container {
   position: fixed;
