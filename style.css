@@ -199,23 +199,19 @@ h2 {
 /* Контейнер для убегающей кнопки */
 /* Убираем старый контейнер или переназначаем его роль */
 .button-container {
-  position: static; /* сбрасываем relative */
-  height: auto;     /* убираем фиксированную высоту */
-  margin: 0;
+  position: relative;
+  height: 120px;
+  width: 100%;
+  margin: 2rem 0;
 }
 
 /* Сама кнопка – фиксированное позиционирование */
 #runawayBtn {
-  position: fixed;
-  z-index: 9999;    /* чтобы быть поверх всего */
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  transition: left 0.1s ease, top 0.1s ease; /* быстрее для динамики */
-  cursor: pointer;
+  transition: left 0.1s ease, top 0.1s ease;
+  will-change: left, top;
+  z-index: 9999;  /* будет поверх всего, когда получит position */
   touch-action: manipulation;
   user-select: none;
-  will-change: left, top; /* оптимизация */
 }
 
 /* Летающие сердечки (анимация задаётся в JS, но можно прописать базовые стили) */
