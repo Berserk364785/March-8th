@@ -49,13 +49,14 @@ function setupRunawayButton() {
   const container = btn.closest('.button-container');
   if (!container) return;
 
+  // Устанавливаем позиционирование для кнопки
   btn.style.position = 'absolute';
   btn.style.left = '50%';
   btn.style.top = '50%';
   btn.style.transform = 'translate(-50%, -50%)';
   btn.style.transition = 'left 0.2s ease, top 0.2s ease';
 
-  // Функция перемещения
+  // Функция для случайного перемещения кнопки внутри контейнера
   function moveButtonRandomly() {
     const containerRect = container.getBoundingClientRect();
     const btnRect = btn.getBoundingClientRect();
@@ -63,6 +64,7 @@ function setupRunawayButton() {
     const maxLeft = containerRect.width - btnRect.width;
     const maxTop = containerRect.height - btnRect.height;
 
+    // Генерируем случайные координаты, чтобы кнопка не выходила за границы
     const newLeft = Math.max(0, Math.min(maxLeft, Math.random() * maxLeft));
     const newTop = Math.max(0, Math.min(maxTop, Math.random() * maxTop));
 
@@ -71,29 +73,34 @@ function setupRunawayButton() {
     btn.style.transform = 'none';
   }
 
-  // Для ПК – при наведении
-  btn.addEventListener('mouseenter', moveButtonRandomly);
+  // Счётчик кликов
+  let clickCount = 0;
 
-  // Для мобильных – при касании
-  btn.addEventListener('touchstart', function(e) {
-    e.preventDefault(); // предотвращаем всплытие, чтобы сразу не переходило
-    moveButtonRandomly();
-  });
-
-  // При клике (когда поймали)
+  // Обработчик клика
   btn.addEventListener('click', function(e) {
-    e.preventDefault();
-    alert('🎉 Теперь лови! 🎉');
-    window.location.href = 'photos.html';
+    e.preventDefault(); // не переходим сразу по ссылке
+
+    if (clickCount < 2) {
+      // Первые два клика — убегаем и показываем сообщение
+      clickCount++;
+      moveButtonRandomly();
+      alert('Не поймала! Лови ещё!');
+    } else {
+      // На третий клик — переходим на страницу с фото
+      window.location.href = 'photos.html';
+    }
   });
 
-  // Для мобильных – дополнительно обрабатываем touchend, чтобы клик сработал после отпускания
-  btn.addEventListener('touchend', function(e) {
-    e.preventDefault();
-    // Если хотим, чтобы переход происходил после отпускания, но тогда кнопка уже прыгнула
-    // можно просто разрешить переход, но с проверкой, что это не просто касание
-    // Лучше оставить логику на click, он срабатывает после touchend
+  // Для мобильных устройств убираем поведение при наведении, 
+  // оставляем только логику кликов
+  // Если хочешь оставить прыжки при наведении на ПК — раскомментируй строки ниже
+  /*
+  btn.addEventListener('mouseenter', function() {
+    if (clickCount < 2) {
+      moveButtonRandomly();
+    }
   });
+  */
 }
 
 // 3. Загадка на странице фото
