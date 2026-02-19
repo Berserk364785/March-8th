@@ -44,102 +44,116 @@ function createFloatingHearts() {
 // 2. Убегающая кнопка на странице стиха
 function setupRunawayButton() {
   const btn = document.getElementById('runawayBtn');
-  if (!btn) return;
-
-  let isFlying = false;        // стала ли кнопка «летающей»
+  if (!btn) {
+    console.log('Кнопка не найдена');
+    return;
+  }
+  
+  console.log('Кнопка найдена, настраиваем убегание');
+  
+  // Флаг - летает ли уже кнопка
+  let isFlying = false;
+  // Счётчик кликов
   let clickCount = 0;
-
-  // Функция получения случайных координат в пределах окна
+  
+  // Функция для получения случайных координат по всему экрану
   function getRandomPosition() {
     const btnWidth = btn.offsetWidth;
     const btnHeight = btn.offsetHeight;
+    
+    // Границы с учётом размера кнопки
     const maxLeft = window.innerWidth - btnWidth;
     const maxTop = window.innerHeight - btnHeight;
-    const left = Math.max(0, Math.min(maxLeft, Math.random() * maxLeft));
-    const top = Math.max(0, Math.min(maxTop, Math.random() * maxTop));
+    
+    // Случайные координаты
+    const left = Math.floor(Math.random() * maxLeft);
+    const top = Math.floor(Math.random() * maxTop);
+    
     return { left, top };
   }
-
-  // Превращаем кнопку в «летающую» (fixed) и перемещаем
-  function makeFlyAndMove() {
+  
+  // Функция для перемещения кнопки
+  function moveButton() {
+    const { left, top } = getRandomPosition();
+    console.log('Перемещаем кнопку на:', left, top);
+    
+    // Применяем новые координаты
+    btn.style.left = left + 'px';
+    btn.style.top = top + 'px';
+  }
+  
+  // Функция для активации "летающего" режима
+  function activateFlyingMode() {
     if (!isFlying) {
-      // Запоминаем текущие координаты кнопки относительно окна
+      console.log('Активируем летающий режим');
+      
+      // Получаем текущие координаты кнопки
       const rect = btn.getBoundingClientRect();
+      
+      // Делаем кнопку фиксированной
       btn.style.position = 'fixed';
       btn.style.left = rect.left + 'px';
       btn.style.top = rect.top + 'px';
-      btn.style.width = btn.offsetWidth + 'px'; // фиксируем ширину
-      btn.style.margin = '0'; // убираем возможные внешние отступы
+      btn.style.width = btn.offsetWidth + 'px';
+      btn.style.zIndex = '9999';
+      btn.style.margin = '0';
+      
       isFlying = true;
+      return true;
     }
-    // Перемещаем в случайное место
-    const { left, top } = getRandomPosition();
-    btn.style.left = left + 'px';
-    btn.style.top = top + 'px';
+    return false;
   }
-
-  // Обработчик клика (и для мыши, и для касания)
-  function handleActivation(e) {
-    e.preventDefault(); // не переходим сразу
-
+  
+  // Основной обработчик клика
+  function handleClick(e) {
+    e.preventDefault();
+    e.stopPropagation(); // Останавливаем всплытие события
+    
+    console.log('Клик по кнопке, clickCount =', clickCount, 'isFlying =', isFlying);
+    
+    // Если кнопка ещё не летающая - активируем режим
     if (!isFlying) {
-      // Первый клик – делаем кнопку летающей и сразу перемещаем
-      makeFlyAndMove();
-      clickCount = 1; // считаем, что это был первый клик
+      activateFlyingMode();
+      clickCount = 1;
+      moveButton();
       alert('Не поймала! Лови ещё!');
       return;
     }
-
-    // Если уже летает
+    
+    // Если летает, но кликов меньше 2
     if (clickCount < 2) {
-      clickCount++;
-      const { left, top } = getRandomPosition();
-      btn.style.left = left + 'px';
-      btn.style.top = top + 'px';
-      alert('Не поймала! Лови ещё!');
-    } else {
-      // Третий клик – переход
-      window.location.href = 'photos.html';
-    }
-  }
-
-  // Навешиваем обработчики
-  btn.addEventListener('click', handleActivation);
-  btn.addEventListener('touchstart', handleActivation, { passive: false });
-}
-
-  // Перемещение кнопки
-  function moveButton() {
-    const { left, top } = getRandomPosition();
-    btn.style.left = left + 'px';
-    btn.style.top = top + 'px';
-    btn.style.transform = 'none'; // убираем центрирование
-  }
-
-  // Счётчик кликов
-  let clickCount = 0;
-
-  // Обработчик клика
-  btn.addEventListener('click', function(e) {
-    e.preventDefault(); // не переходим сразу
-
-    if (clickCount < 2) { // первые два клика – убегает
       clickCount++;
       moveButton();
       alert('Не поймала! Лови ещё!');
-    } else { // третий клик – переход
-      window.location.href = 'photos.html';
+      return;
     }
-  });
-
-  // Для мобильных – чтобы при касании тоже считалось и убегало
-  btn.addEventListener('touchstart', function(e) {
-    e.preventDefault(); // предотвращаем всплытие
-    // Можно вызывать ту же логику, но осторожно: touchstart может сработать раньше click
-    // Поэтому оставим только click, а touchstart просто блокируем стандартное поведение
-  }, { passive: false });
+    
+    // Третий клик - переход
+    console.log('Третий клик, переходим на photos.html');
+    window.location.href = 'photos.html';
+  }
+  
+  // Обработчик касания для мобильных
+  function handleTouch(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    console.log('Касание кнопки');
+    
+    // Просто вызываем тот же обработчик, что и для клика
+    handleClick(e);
+  }
+  
+  // Удаляем старые обработчики (на всякий случай)
+  btn.removeEventListener('click', handleClick);
+  btn.removeEventListener('touchstart', handleTouch);
+  
+  // Добавляем новые
+  btn.addEventListener('click', handleClick);
+  btn.addEventListener('touchstart', handleTouch, { passive: false });
+  
+  console.log('Обработчики событий установлены');
 }
-
 // 3. Загадка на странице фото
 function setupPhotoQuiz() {
   const overlay = document.getElementById('quizOverlay');
