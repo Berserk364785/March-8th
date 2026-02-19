@@ -30,7 +30,22 @@
       Спасибо, что ты есть у меня,<br>
       Мой самый теплый, яркий свет из дня!<br>
     </div>
+<!-- Аудио плеер -->
+<div class="audio-player">
+  <button id="playVoiceBtn" class="button small">🎤 Голосовое поздравление</button>
+  <button id="playMusicBtn" class="button small">🎵 Фоновая музыка</button>
+</div>
 
+<!-- Невидимые аудиоэлементы -->
+<audio id="voiceMessage" preload="auto">
+  <source src="voice.mp3" type="audio/mpeg">
+  Твой браузер не поддерживает аудио.
+</audio>
+<audio id="backgroundMusic" loop preload="auto">
+  <source src="bgmusic.mp3" type="audio/mpeg">
+  Твой браузер не поддерживает аудио.
+</audio>
+      
     <!-- Контейнер для убегающей кнопки -->
     <div class="button-container">
       <a href="photos.html" id="runawayBtn" class="button">Посмотреть фотографии</a>
