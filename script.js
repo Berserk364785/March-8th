@@ -91,7 +91,7 @@ function setupPhotoQuiz() {
   const overlay = document.getElementById('quizOverlay');
   const photoGrid = document.querySelector('.photo-grid');
   const options = document.querySelectorAll('.quiz-option');
-  const correct = 'любовь'; // правильный ответ
+  const correct = 'дружба'; // правильный ответ
 
   if (!overlay) return;
 
