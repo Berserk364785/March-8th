@@ -122,7 +122,7 @@ function setupPhotoQuiz() {
   if (!overlay) return;
 
   // Правильный ответ
-  const correctAnswer = 'любовь';
+  const correctAnswer = 'Дружба';
 
   options.forEach(opt => {
     opt.addEventListener('click', function() {
