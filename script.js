@@ -49,40 +49,50 @@ function setupRunawayButton() {
   const container = btn.closest('.button-container');
   if (!container) return;
 
-  // Убедимся, что кнопка позиционирована абсолютно внутри контейнера
   btn.style.position = 'absolute';
   btn.style.left = '50%';
   btn.style.top = '50%';
   btn.style.transform = 'translate(-50%, -50%)';
   btn.style.transition = 'left 0.2s ease, top 0.2s ease';
 
-  // Функция для случайного перемещения
+  // Функция перемещения
   function moveButtonRandomly() {
     const containerRect = container.getBoundingClientRect();
     const btnRect = btn.getBoundingClientRect();
 
-    // Максимальные координаты, чтобы кнопка не выходила за границы контейнера
     const maxLeft = containerRect.width - btnRect.width;
     const maxTop = containerRect.height - btnRect.height;
 
-    // Генерируем случайные координаты
     const newLeft = Math.max(0, Math.min(maxLeft, Math.random() * maxLeft));
     const newTop = Math.max(0, Math.min(maxTop, Math.random() * maxTop));
 
     btn.style.left = newLeft + 'px';
     btn.style.top = newTop + 'px';
-    btn.style.transform = 'none'; // убираем центрирование
+    btn.style.transform = 'none';
   }
 
-  // При наведении кнопка прыгает
+  // Для ПК – при наведении
   btn.addEventListener('mouseenter', moveButtonRandomly);
+
+  // Для мобильных – при касании
+  btn.addEventListener('touchstart', function(e) {
+    e.preventDefault(); // предотвращаем всплытие, чтобы сразу не переходило
+    moveButtonRandomly();
+  });
 
   // При клике (когда поймали)
   btn.addEventListener('click', function(e) {
-    e.preventDefault(); // не переходим сразу
+    e.preventDefault();
     alert('🎉 Теперь лови! 🎉');
-    // Переход на страницу с фото
     window.location.href = 'photos.html';
+  });
+
+  // Для мобильных – дополнительно обрабатываем touchend, чтобы клик сработал после отпускания
+  btn.addEventListener('touchend', function(e) {
+    e.preventDefault();
+    // Если хотим, чтобы переход происходил после отпускания, но тогда кнопка уже прыгнула
+    // можно просто разрешить переход, но с проверкой, что это не просто касание
+    // Лучше оставить логику на click, он срабатывает после touchend
   });
 }
 
