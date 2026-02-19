@@ -46,25 +46,67 @@ function setupRunawayButton() {
   const btn = document.getElementById('runawayBtn');
   if (!btn) return;
 
-  // Начальное положение (центр экрана)
-  btn.style.left = '50%';
-  btn.style.top = '50%';
-  btn.style.transform = 'translate(-50%, -50%)';
+  let isFlying = false;        // стала ли кнопка «летающей»
+  let clickCount = 0;
 
-  // Функция для получения безопасных координат
+  // Функция получения случайных координат в пределах окна
   function getRandomPosition() {
     const btnWidth = btn.offsetWidth;
     const btnHeight = btn.offsetHeight;
-
     const maxLeft = window.innerWidth - btnWidth;
     const maxTop = window.innerHeight - btnHeight;
-
-    // Генерируем случайные координаты в пределах видимой области
     const left = Math.max(0, Math.min(maxLeft, Math.random() * maxLeft));
     const top = Math.max(0, Math.min(maxTop, Math.random() * maxTop));
-
     return { left, top };
   }
+
+  // Превращаем кнопку в «летающую» (fixed) и перемещаем
+  function makeFlyAndMove() {
+    if (!isFlying) {
+      // Запоминаем текущие координаты кнопки относительно окна
+      const rect = btn.getBoundingClientRect();
+      btn.style.position = 'fixed';
+      btn.style.left = rect.left + 'px';
+      btn.style.top = rect.top + 'px';
+      btn.style.width = btn.offsetWidth + 'px'; // фиксируем ширину
+      btn.style.margin = '0'; // убираем возможные внешние отступы
+      isFlying = true;
+    }
+    // Перемещаем в случайное место
+    const { left, top } = getRandomPosition();
+    btn.style.left = left + 'px';
+    btn.style.top = top + 'px';
+  }
+
+  // Обработчик клика (и для мыши, и для касания)
+  function handleActivation(e) {
+    e.preventDefault(); // не переходим сразу
+
+    if (!isFlying) {
+      // Первый клик – делаем кнопку летающей и сразу перемещаем
+      makeFlyAndMove();
+      clickCount = 1; // считаем, что это был первый клик
+      alert('Не поймала! Лови ещё!');
+      return;
+    }
+
+    // Если уже летает
+    if (clickCount < 2) {
+      clickCount++;
+      const { left, top } = getRandomPosition();
+      btn.style.left = left + 'px';
+      btn.style.top = top + 'px';
+      alert('Не поймала! Лови ещё!');
+    } else {
+      // Третий клик – переход
+      window.location.href = 'photos.html';
+    }
+  }
+
+  // Навешиваем обработчики
+  btn.addEventListener('click', handleActivation);
+  btn.addEventListener('touchstart', handleActivation, { passive: false });
+}
 
   // Перемещение кнопки
   function moveButton() {
