@@ -78,6 +78,64 @@ function setupPhotoQuiz() {
   });
 }
 
+// Аудио управление
+function setupAudio() {
+  const voiceBtn = document.getElementById('playVoiceBtn');
+  const musicBtn = document.getElementById('playMusicBtn');
+  const voiceAudio = document.getElementById('voiceMessage');
+  const musicAudio = document.getElementById('backgroundMusic');
+
+  if (!voiceBtn || !musicBtn || !voiceAudio || !musicAudio) return;
+
+  // Переменные для отслеживания состояния
+  let isVoicePlaying = false;
+  let isMusicPlaying = false;
+
+  // Голосовое сообщение
+  voiceBtn.addEventListener('click', function() {
+    if (isVoicePlaying) {
+      voiceAudio.pause();
+      voiceAudio.currentTime = 0;
+      voiceBtn.textContent = '🎤 Голосовое поздравление';
+    } else {
+      // Если фоновая музыка играет, можно её приостановить (опционально)
+      if (isMusicPlaying) {
+        musicAudio.pause();
+        musicBtn.textContent = '🎵 Фоновая музыка';
+        isMusicPlaying = false;
+      }
+      voiceAudio.play();
+      voiceBtn.textContent = '⏸ Голосовое (пауза)';
+    }
+    isVoicePlaying = !isVoicePlaying;
+  });
+
+  // Фоновая музыка
+  musicBtn.addEventListener('click', function() {
+    if (isMusicPlaying) {
+      musicAudio.pause();
+      musicBtn.textContent = '🎵 Фоновая музыка';
+    } else {
+      // Если голосовое играет, оставляем как есть (можно перекрывать)
+      musicAudio.play();
+      musicBtn.textContent = '⏸ Фоновая (пауза)';
+    }
+    isMusicPlaying = !isMusicPlaying;
+  });
+
+  // Обработка окончания голосового (меняем текст кнопки)
+  voiceAudio.addEventListener('ended', function() {
+    voiceBtn.textContent = '🎤 Голосовое поздравление';
+    isVoicePlaying = false;
+  });
+
+  // Можно добавить обработку окончания фоновой (если не loop)
+  musicAudio.addEventListener('ended', function() {
+    musicBtn.textContent = '🎵 Фоновая музыка';
+    isMusicPlaying = false;
+  });
+}
+
 // Запуск при загрузке
 document.addEventListener('DOMContentLoaded', function() {
   createFloatingHearts();
